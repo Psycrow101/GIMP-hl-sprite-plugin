@@ -431,7 +431,7 @@ def save_spr(img, drawable, filename, raw_filename):
 
 
 def register_load_handlers():
-    gimp.register_magic_load_handler(LOAD_PROC, 'spr', '', '0,string,' + str(Sprite.MAGIC) + chr(Sprite.VERSION))
+    gimp.register_magic_load_handler(LOAD_PROC, 'spr', '', '0,string,' + str(Sprite.MAGIC))
 
 
 def register_save_handlers():

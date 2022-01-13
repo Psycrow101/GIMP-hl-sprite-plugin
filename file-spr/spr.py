@@ -8,7 +8,8 @@ import os
 
 class Sprite:
     MAGIC = 'IDSP'
-    VERSION = 0x2
+    VERSION_BMP, VERSION_DDS = 0x2, 0x3
+    VERSIONS = (VERSION_BMP, VERSION_DDS)
 
     HEADER_STRUCT = '<4s3If3IfI'
     FRAME_PARAMS_STRUCT = '<2i2I'
@@ -54,11 +55,25 @@ class Sprite:
 
         fd = open(file_path, 'rb')
         header = Sprite._read_header(fd)
-        palette = Sprite._read_palette(fd)
-        frames = [Sprite._read_frame(fd) for _ in range(header.frames_number)]
 
-        image = Sprite._make_image(header, palette, frames)
-        # image.filename = os.path.basename(file_path)
+        if header.version == Sprite.VERSION_BMP:
+            palette = Sprite._read_palette(fd)
+            frames = [Sprite._read_frame(fd) for _ in range(header.frames_number)]
+
+            image = Sprite._make_image(header, palette, frames)
+            # image.filename = os.path.basename(file_path)
+        else:
+            dds_frames = Sprite._read_dds_frames(fd, header.frames_number)
+            images = Sprite._load_dds_frames(dds_frames)
+
+            for img in images:
+                img.attach_new_parasite('spr_type', header.type, '')
+                img.attach_new_parasite('spr_format', header.format, '')
+                gimp.Display(img)
+                gimp.displays_flush()
+                
+            image = images[-1].duplicate()
+
         image.clean_all()
         return image
 
@@ -84,7 +99,7 @@ class Sprite:
         max_height = image.height
         radius = sqrt((max_width >> 1) * (max_width >> 1) + (max_height >> 1) * (max_height >> 1))
 
-        header = Sprite.SprHeader(Sprite.MAGIC, Sprite.VERSION, spr_type, texture_format,
+        header = Sprite.SprHeader(Sprite.MAGIC, Sprite.VERSION_BMP, spr_type, texture_format,
                                   radius, max_width, max_height, frames_num, 0, 1)
 
         gimp.progress_init('Preparing %d %s' % (frames_num, 'frame' if frames_num == 1 else 'frames'))
@@ -126,7 +141,7 @@ class Sprite:
         header = Sprite.SprHeader(*unpack(Sprite.HEADER_STRUCT, fd.read(40)))
         if header.magic != Sprite.MAGIC:
             raise ImportError('Invalid spr file')
-        if header.version != Sprite.VERSION:
+        if header.version not in Sprite.VERSIONS:
             raise ImportError('Invalid spr version: %d' % header.version)
         if header.frames_number < 1:
             raise ImportError('Invalid number of frames: %d' % header.frames_number)
@@ -255,3 +270,41 @@ class Sprite:
         if layer.type == INDEXEDA_IMAGE:
             indices = indices[::2]
         return indices
+
+    @staticmethod
+    def _read_dds_frames(fd, num):
+        data = fd.read()
+        dds_pos, dds_bounds = 0, []
+        while num > 0:
+            begin, end = dds_pos, data.find('DDS', dds_pos + 3)
+            if end == -1:
+                end, num = None, 0
+            dds_bounds.append((begin, end))
+            dds_pos = end
+            num -= 1
+        return [data[begin:end] for begin, end in dds_bounds]
+
+    @staticmethod
+    def _load_dds_frames(dds_frames):
+        import tempfile
+
+        images = []
+        for i, data in enumerate(dds_frames):
+            tempfd, temppath = tempfile.mkstemp(suffix='.dds')
+
+            with open(temppath, 'wb') as fd:
+                fd.write(data)
+
+            exception = None
+            try:
+                images.append(pdb.file_dds_load(temppath, temppath, 0, 1))
+            except RuntimeError as e:
+                exception = e
+
+            os.close(tempfd)
+            os.unlink(temppath)
+
+            if exception:
+                fail('Error loading DDS frame_%d:\n\n%s!' % (i, e.message))
+
+        return images

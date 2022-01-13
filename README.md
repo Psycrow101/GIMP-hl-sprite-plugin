@@ -1,5 +1,5 @@
 # Half-Life sprite plugin for GIMP
-GIMP plugin that allows you to import and export sprites from a Half-Life game.
+GIMP plugin that allows you to import and export sprites from a Half-Life game. This plugin can also open new version sprites containing DDS textures used in Counter-Strike Online (*Experimantal feature*).
 <img src="https://github.com/Psycrow101/GIMP-hl-sprite-plugin/blob/master/img/1.png" width="70%"/>
 
 ## Requirements
