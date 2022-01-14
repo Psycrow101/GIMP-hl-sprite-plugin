@@ -46,11 +46,12 @@ class Sprite:
     ])
 
     @staticmethod
-    def load_from_file(file_path):
+    def load_from_file(file_path, last_dds_frame=False):
         """
         Load Sprite from file.
         :param file_path: path to the sprite file
-        :return: gimp image
+        :param last_dds_frame: load only last dds frame if available
+        :return: gimp images
         """
 
         fd = open(file_path, 'rb')
@@ -59,23 +60,23 @@ class Sprite:
         if header.version == Sprite.VERSION_BMP:
             palette = Sprite._read_palette(fd)
             frames = [Sprite._read_frame(fd) for _ in range(header.frames_number)]
-
             image = Sprite._make_image(header, palette, frames)
             # image.filename = os.path.basename(file_path)
-        else:
-            dds_frames = Sprite._read_dds_frames(fd, header.frames_number)
-            images = Sprite._load_dds_frames(dds_frames)
+            image.clean_all()
+            images = [image]
 
+        elif header.version == Sprite.VERSION_DDS:
+            dds_frames = Sprite._read_dds_frames(fd, header.frames_number)
+
+            if last_dds_frame:
+                dds_frames = dds_frames[-1:]
+
+            images = Sprite._load_dds_frames(dds_frames)
             for img in images:
                 img.attach_new_parasite('spr_type', header.type, '')
                 img.attach_new_parasite('spr_format', header.format, '')
-                gimp.Display(img)
-                gimp.displays_flush()
-                
-            image = images[-1].duplicate()
 
-        image.clean_all()
-        return image
+        return images
 
     @staticmethod
     def save_to_file(image, file_path, grouped_layers,

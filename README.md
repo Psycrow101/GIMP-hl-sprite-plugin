@@ -3,8 +3,8 @@ GIMP plugin that allows you to import and export sprites from a Half-Life game. 
 <img src="https://github.com/Psycrow101/GIMP-hl-sprite-plugin/blob/master/img/1.png" width="70%"/>
 
 ## Requirements
-1. [GIMP](https://www.gimp.org/), recommended GIMP version >= 2.10.  
-2. GIMP's python module gimpfu.  
+1. [GIMP](https://www.gimp.org/), recommended GIMP version >= 2.10.
+2. GIMP's python module gimpfu with [patch](https://gitlab.gnome.org/GNOME/gimp/-/blob/5557ad8ac7708d3b062f885e1609c082dfb1710d/plug-ins/pygimp/gimpfu.py).
 
 ## Installation
 Download and extract the `file-spr` folder to GIMP's `plug-ins` folder:  

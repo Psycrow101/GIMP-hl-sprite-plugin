@@ -21,14 +21,29 @@ COPYRIGHT_YEAR = '2020'
 
 EDITOR_PROC = 'hl-spr-export-dialog'
 LOAD_PROC = 'file-hl-spr-load'
+LOAD_THUMB_PROC  = 'file-hl-spr-load-thumb'
 SAVE_PROC = 'file-hl-spr-save'
+
+
+def load_spr_thumbnail(file_path, thumb_size):
+    img = Sprite.load_from_file(file_path, True)[0]
+    width, height = img.width, img.height
+    scale = float(thumb_size) / max(width, height)
+    if scale and scale != 1.0:
+        width = int(width * scale)
+        height = int(height * scale)
+        pdb.gimp_image_scale(img, width, height)
+
+    return (img, width, height)
 
 
 def load_spr(file_path, raw_filename):
     try:
-        image = Sprite.load_from_file(file_path)
-        gimp.displays_flush()
-        return image
+        images = Sprite.load_from_file(file_path)
+        for img in images[:-1]:
+            gimp.Display(img)
+            gimp.displays_flush()
+        return images[-1]
     except Exception as e:
         fail('Error loading sprite file:\n\n%s!' % e.message)
 
@@ -432,11 +447,34 @@ def save_spr(img, drawable, filename, raw_filename):
 
 def register_load_handlers():
     gimp.register_magic_load_handler(LOAD_PROC, 'spr', '', '0,string,' + str(Sprite.MAGIC))
+    pdb.gimp_register_thumbnail_loader(LOAD_PROC, LOAD_THUMB_PROC)
 
 
 def register_save_handlers():
     gimp.register_save_handler(SAVE_PROC, 'spr', '')
 
+
+register(
+    LOAD_THUMB_PROC,
+    'Loads a thumbnail for Half-Life sprite (.spr)',
+    '',
+    AUTHOR,
+    COPYRIGHT,
+    COPYRIGHT_YEAR,
+    None,
+    None,
+    [
+        (PF_STRING, 'filename', 'The name of the file to load', None),
+        (PF_INT, 'thumb-size', 'Preferred thumbnail size', None),
+    ],
+    [
+        (PF_IMAGE, 'image', 'Thumbnail image'),
+        (PF_INT, 'image-width', 'Width of full-sized image'),
+        (PF_INT, 'image-height', 'Height of full-sized image')
+    ],
+    load_spr_thumbnail,
+    run_mode_param = False
+)
 
 register(
     LOAD_PROC,
