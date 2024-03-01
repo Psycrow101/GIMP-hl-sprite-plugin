@@ -4,7 +4,7 @@ GIMP plugin that allows you to import and export sprites from a Half-Life game. 
 
 ## Requirements
 1. [GIMP](https://www.gimp.org/), recommended GIMP version >= 2.10.
-2. GIMP's python module gimpfu with [patch](https://gitlab.gnome.org/GNOME/gimp/-/blob/5557ad8ac7708d3b062f885e1609c082dfb1710d/plug-ins/pygimp/gimpfu.py).
+2. GIMP's python module gimpfu with [patch](https://gitlab.gnome.org/GNOME/gimp/-/blob/5557ad8ac7708d3b062f885e1609c082dfb1710d/plug-ins/pygimp/gimpfu.py). Note: for **Arch Linux** you should use [python2-gimp](https://aur.archlinux.org/packages/python2-gimp) instead.
 
 ## Installation
 Download and extract the `file-spr` folder to GIMP's `plug-ins` folder:  
