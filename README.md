@@ -21,7 +21,7 @@ To import `.spr` file into GIMP, go to File > Open.
 To export image as `.spr` file from GIMP, go to File > Export As then enter the file name with `*.spr` extension and click *Export*.
 In the dialog box that appears, you can configure the exported sprite.
 
-<img src="https://github.com/Psycrow101/GIMP-hl-sprite-plugin/blob/master/img/2.png" width="50%"/>
+<img src="https://github.com/Psycrow101/GIMP-hl-sprite-plugin/blob/master/img/2.png" width="70%"/>
 
 In this version of the plugin, export of frame groups is supported only if you have previously imported a sprite containing frame groups and have not changed the color indexing mode. Otherwise, the layer groups will be merged.
 
