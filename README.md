@@ -3,21 +3,22 @@ GIMP plugin that allows you to import and export sprites from a Half-Life game. 
 <img src="https://github.com/Psycrow101/GIMP-hl-sprite-plugin/blob/master/img/1.png" width="70%"/>
 
 ## Requirements
-1. [GIMP](https://www.gimp.org/), GIMP version 2.10.
-2. GIMP's python module gimpfu with [patch](https://gitlab.gnome.org/GNOME/gimp/-/blob/5557ad8ac7708d3b062f885e1609c082dfb1710d/plug-ins/pygimp/gimpfu.py). Note: for **Arch Linux** you should use [python2-gimp](https://aur.archlinux.org/packages/python2-gimp) instead.
+1. [GIMP](https://www.gimp.org/), GIMP 3.2.8
+
+For GIMP 2.10, use the [gimp-2.10](https://github.com/Psycrow101/GIMP-hl-sprite-plugin/tree/gimp-2.10) branch.
 
 ## Installation
-Download and extract the `file-spr` folder to GIMP's `plug-ins` folder:  
-	**Windows**: `C:\Users\<USERNAME>\AppData\Roaming\GIMP\2.10\plug-ins`  
-	**Linux**: `/home/<USERNAME>/.config/GIMP/2.10/plug-ins`  
-	**macOS**: `/Users/<USERNAME>/Library/Application Support/GIMP/2.10/plug-ins`
+Download and extract the `file-spr` folder to GIMP's `plug-ins` folder:
+	**Windows**: `C:\Users\<USERNAME>\AppData\Roaming\GIMP\3.2\plug-ins`
+	**Linux**: `/home/<USERNAME>/.config/GIMP/3.2/plug-ins`
+	**macOS**: `/Users/<USERNAME>/Library/Application Support/GIMP/3.2/plug-ins`
 
 *If you can’t locate the `plug-ins` folder, open GIMP and go to Edit > Preferences > Folders > Plug-Ins and use one of the listed folders.*
 
 ## Usage
 To import `.spr` file into GIMP, go to File > Open.
 
-To export image as `.spr` file from GIMP, go to File > Export As then enter the file name with `*.spr` extension and click *Export*. 
+To export image as `.spr` file from GIMP, go to File > Export As then enter the file name with `*.spr` extension and click *Export*.
 In the dialog box that appears, you can configure the exported sprite.
 
 <img src="https://github.com/Psycrow101/GIMP-hl-sprite-plugin/blob/master/img/2.png" width="50%"/>
